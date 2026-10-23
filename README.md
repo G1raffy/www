@@ -5,14 +5,21 @@ A playful static website hosted on GitHub Pages featuring a Minecraft-style voxe
 ## Features
 
 - **Minecraft Voxel Aesthetics**: Retro pixel font, savanna biome badge, and cubic layout.
-- **Interactive Giraffe**: Click directly on the giraffe to feed it grass.
-  - The giraffe dips its head with a munching animation.
-  - Authentic procedural Minecraft crunchy eating sound effects and floating leaf particles (`*NOM*`, `*CRUNCH*`).
-  - Each bite consumes a grass block from the savanna lawn below, turning it into bare dirt (just like sheep in Minecraft!).
-- **Dynamic Grass Regrowth**:
-  - After a few seconds, little green sprouts pop up and each dirt block dynamically regrows back into vibrant grass, complete with a chime sound.
-  - Real-time counter tracks the lawn's condition (`X / 10 GRASS`).
-- **Interactive Buttons**: "Feed Grass 🌿" and "Say Hello Back! 💬".
+- **3 Hearts Health System**:
+  - The giraffe starts with 3 full Minecraft hearts displayed at the top (`HP: ❤️ ❤️ ❤️`).
+  - Animated heart pulses for taking damage and healing.
+- **Surface Grass Lawn (Layer 1)**:
+  - 10 interactive surface grass blocks.
+  - Eating surface grass restores lost hearts!
+  - Blocks dynamically regrow after a few seconds with a sprout animation (`🌱`) and chime.
+- **Mystery Sub-Layer (Layer 2 - Stone & Grass)**:
+  - Located directly beneath the lawn with hidden `?` mystery blocks.
+  - Clicking them (or clicking the giraffe) uncovers the underground block:
+    - **Stone**: Ouch! The giraffe bites hard stone, triggers a Minecraft red damage flash, plays a metallic clang/crunch, and loses 1 heart (`-1 💔`). If it eats stone 3 times, it loses all 3 hearts and gets dizzy!
+    - **Grass**: A sweet hidden grass block! It plays a crunch munch sound, restores a lost heart, and helps the hearts go back (`+1 ❤️`)!
+- **Sound & Animation**:
+  - Real-time procedural audio synthesis using Web Audio API (crunch sound, stone clatter, and healing chime).
+  - Floating pixel particles (`*NOM*`, `*CLANG*`, `+1 ❤️ RESTORED!`).
 
 ## Files
 
@@ -24,8 +31,8 @@ A playful static website hosted on GitHub Pages featuring a Minecraft-style voxe
 1. Commit and push your changes:
    ```bash
    git add .
-   git commit -m "Add interactive grass eating and regrowth feature"
-   git push -u origin main
+   git commit -m "Add mystery layer with stone and grass, 3 hearts system"
+   git push
    ```
 2. In your GitHub repository:
    - Go to **Settings** > **Pages**.

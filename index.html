@@ -20,6 +20,7 @@
       --dirt-dark: #5c4028;
       --stone-gray: #7d7d7d;
       --stone-dark: #505050;
+      --lava-orange: #ff5722;
       --text-main: #f0f4f8;
       --text-sub: #a0aec0;
     }
@@ -31,17 +32,34 @@
       user-select: none;
     }
 
+    /* Dynamic Biome Themes */
     body {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, #3a506b 0%, #1c2541 70%, #0b132b 100%);
       font-family: 'Outfit', sans-serif;
       color: var(--text-main);
       padding: 20px;
       overflow-x: hidden;
+      transition: background 0.8s ease;
+    }
+
+    body.theme-savanna {
+      background: radial-gradient(circle at top, #3a506b 0%, #1c2541 70%, #0b132b 100%);
+    }
+
+    body.theme-plains {
+      background: radial-gradient(circle at top, #2e7d32 0%, #1b5e20 65%, #082810 100%);
+    }
+
+    body.theme-nether {
+      background: radial-gradient(circle at top, #800e13 0%, #38040e 65%, #100105 100%);
+    }
+
+    body.theme-sunflower {
+      background: radial-gradient(circle at top, #c0ca33 0%, #33691e 65%, #102507 100%);
     }
 
     .container {
@@ -51,41 +69,53 @@
       border: 4px solid #4f6367;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 2px #263238;
       border-radius: 12px;
-      padding: 32px 24px;
+      padding: 30px 22px;
       text-align: center;
       backdrop-filter: blur(8px);
       position: relative;
+      transition: border-color 0.4s ease;
     }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
       gap: 10px;
     }
 
+    /* Biome Badges */
     .minecraft-badge {
       display: inline-block;
       font-family: 'Press Start 2P', monospace;
       font-size: 10px;
       color: #111;
-      background: var(--accent-color);
       padding: 6px 12px;
       border: 2px solid #000;
       box-shadow: 2px 2px 0 #000;
       text-transform: uppercase;
       letter-spacing: 1px;
+      transition: background-color 0.4s, color 0.4s;
     }
 
-    /* Minecraft Hearts Bar */
+    .badge-savanna { background: #f7b733; color: #111; }
+    .badge-plains { background: #4caf50; color: #fff; text-shadow: 1px 1px 0 #000; }
+    .badge-nether { background: #d32f2f; color: #fff; text-shadow: 1px 1px 0 #000; animation: nether-pulse 1.8s infinite alternate; }
+    .badge-sunflower { background: #ffd600; color: #212121; }
+
+    @keyframes nether-pulse {
+      0% { box-shadow: 2px 2px 0 #000, 0 0 8px rgba(255, 87, 34, 0.6); }
+      100% { box-shadow: 2px 2px 0 #000, 0 0 16px rgba(255, 23, 68, 0.9); }
+    }
+
+    /* Minecraft Hearts Bar (Supports up to 5 hearts!) */
     .hearts-bar {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 6px 12px;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 6px 10px;
       border: 2px solid #000;
       box-shadow: 2px 2px 0 #000;
       border-radius: 4px;
@@ -99,19 +129,14 @@
     }
 
     .heart {
-      width: 20px;
-      height: 20px;
+      width: 19px;
+      height: 19px;
       display: inline-block;
       transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .heart.hurt-pop {
-      animation: heart-flash 0.4s ease;
-    }
-
-    .heart.heal-pop {
-      animation: heart-revive 0.5s ease;
-    }
+    .heart.hurt-pop { animation: heart-flash 0.4s ease; }
+    .heart.heal-pop { animation: heart-revive 0.5s ease; }
 
     @keyframes heart-flash {
       0%, 100% { transform: scale(1); }
@@ -126,17 +151,17 @@
 
     h1 {
       font-family: 'Press Start 2P', monospace;
-      font-size: clamp(1.3rem, 3.8vw, 2rem);
+      font-size: clamp(1.2rem, 3.6vw, 1.9rem);
       line-height: 1.4;
       color: #ffffff;
       text-shadow: 3px 3px 0 #000, -2px -2px 0 #333;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .subtitle {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: var(--text-sub);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       line-height: 1.5;
     }
 
@@ -151,7 +176,7 @@
       border: 2px dashed #f7b733;
       padding: 8px 14px;
       border-radius: 4px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       animation: pulse-hint 2.2s infinite ease-in-out;
       line-height: 1.4;
     }
@@ -161,7 +186,7 @@
       50% { transform: scale(1.02); opacity: 1; }
     }
 
-    /* Giraffe Picture Frame */
+    /* Picture Frame & Giraffe */
     .image-frame {
       position: relative;
       background: #111;
@@ -206,9 +231,7 @@
     }
 
     /* Giraffe Animations */
-    .munching {
-      animation: giraffe-munch 0.5s ease-in-out;
-    }
+    .munching { animation: giraffe-munch 0.5s ease-in-out; }
 
     @keyframes giraffe-munch {
       0% { transform: translateY(0) scale(1) rotate(0deg); }
@@ -218,10 +241,14 @@
       100% { transform: translateY(0) scale(1) rotate(0deg); }
     }
 
-    /* Red hurt flash on Giraffe */
     .hurt {
       animation: giraffe-hurt 0.45s ease-in-out;
       filter: sepia(1) saturate(7) hue-rotate(-60deg) brightness(0.9) !important;
+    }
+
+    .lava-burn {
+      animation: giraffe-lava 0.6s ease-in-out;
+      filter: drop-shadow(0 0 15px #ff3d00) saturate(9) hue-rotate(-40deg) brightness(1.2) !important;
     }
 
     @keyframes giraffe-hurt {
@@ -232,9 +259,15 @@
       80% { transform: translate(4px, -2px) rotate(2deg); }
     }
 
-    /* Dizzy / knocked out state */
+    @keyframes giraffe-lava {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(0.92, 1.08) translateY(-12px) rotate(-5deg); }
+      50% { transform: scale(1.08, 0.92) translateY(6px) rotate(5deg); }
+      75% { transform: scale(0.95, 1.05) translateY(-6px) rotate(-2deg); }
+    }
+
     .dizzy {
-      filter: grayscale(0.5) contrast(1.1);
+      filter: grayscale(0.6) contrast(1.1);
       animation: giraffe-dizzy 2s infinite ease-in-out;
     }
 
@@ -244,7 +277,7 @@
       75% { transform: rotate(3deg) translateY(6px); }
     }
 
-    /* Floating Particles & Comic Text */
+    /* Floating Particles */
     .particle-layer {
       position: absolute;
       inset: 0;
@@ -264,45 +297,34 @@
     }
 
     @keyframes float-crumb {
-      0% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(var(--rot));
-        opacity: 0;
-      }
+      0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(var(--rot)); opacity: 0; }
     }
 
     .floating-text {
       position: absolute;
       font-family: 'Press Start 2P', monospace;
-      font-size: 13px;
-      animation: float-up 0.9s forwards ease-out;
+      font-size: 12px;
+      animation: float-up 0.95s forwards ease-out;
       pointer-events: none;
       white-space: nowrap;
     }
 
-    .floating-text.heal {
-      color: #69f0ae;
-      text-shadow: 2px 2px 0 #000, -1px -1px 0 #1b5e20;
-    }
-
-    .floating-text.damage {
-      color: #ff5252;
-      text-shadow: 2px 2px 0 #000, -1px -1px 0 #b71c1c;
-    }
+    .floating-text.heal { color: #69f0ae; text-shadow: 2px 2px 0 #000, -1px -1px 0 #1b5e20; }
+    .floating-text.damage { color: #ff5252; text-shadow: 2px 2px 0 #000, -1px -1px 0 #b71c1c; }
+    .floating-text.lava { color: #ffab00; text-shadow: 2px 2px 0 #000, 0 0 8px #ff3d00; }
+    .floating-text.upgrade { color: #ffd600; text-shadow: 2px 2px 0 #000, 0 0 10px #ffea00; }
 
     @keyframes float-up {
       0% { transform: translate(-50%, 0) scale(0.8); opacity: 0; }
-      20% { transform: translate(-50%, -10px) scale(1.25); opacity: 1; }
-      100% { transform: translate(-50%, -45px) scale(1); opacity: 0; }
+      20% { transform: translate(-50%, -10px) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -48px) scale(1); opacity: 0; }
     }
 
     /* Multi-Layer Terrain Container */
     .terrain-container {
       max-width: 520px;
-      margin: 0 auto 20px;
+      margin: 0 auto 18px;
       background: #170e08;
       padding: 8px 10px 10px;
       border: 4px solid #3e2723;
@@ -335,7 +357,7 @@
       border: 2px solid #27170e;
     }
 
-    /* Block Bases */
+    /* Blocks */
     .block {
       aspect-ratio: 1 / 1;
       position: relative;
@@ -345,39 +367,35 @@
       transition: transform 0.1s, filter 0.15s;
     }
 
-    .block:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.2);
-    }
+    .block:hover { transform: translateY(-2px); filter: brightness(1.2); }
+    .block:active { transform: translateY(1px); }
 
-    .block:active {
-      transform: translateY(1px);
-    }
-
-    /* Surface Grass Block */
-    .block.grass {
-      background:
-        linear-gradient(180deg,
-          #6fa33c 0%, #5b8c38 35%,
-          #4a752c 36%, #4a752c 45%,
-          #866043 46%, #6e4c32 100%
-        );
+    /* Surface Grass per Biome */
+    .block.grass-savanna {
+      background: linear-gradient(180deg, #6fa33c 0%, #5b8c38 35%, #4a752c 36%, #4a752c 45%, #866043 46%, #6e4c32 100%);
       border: 2px solid #3d2616;
-      box-shadow: 0 -2px 0 #7cb342, inset 1px 1px 0 #8bc34a, inset -1px -1px 0 #2e4a19;
+      box-shadow: 0 -2px 0 #7cb342;
     }
 
-    .block.grass::after {
-      content: "";
-      position: absolute;
-      top: -3px;
-      left: 2px;
-      right: 2px;
-      height: 4px;
-      background: repeating-linear-gradient(90deg, #7cb342 0, #7cb342 4px, transparent 4px, transparent 8px);
-      pointer-events: none;
+    .block.grass-plains {
+      background: linear-gradient(180deg, #5ebd3e 0%, #43a047 35%, #2e7d32 36%, #2e7d32 45%, #6d4c41 46%, #4e342e 100%);
+      border: 2px solid #271d18;
+      box-shadow: 0 -2px 0 #76ff03;
     }
 
-    /* Eaten Surface Block: Bare Dirt */
+    .block.grass-nether {
+      background: linear-gradient(180deg, #c2185b 0%, #880e4f 35%, #ad1457 36%, #4a0e17 45%, #56000c 46%, #2d0006 100%);
+      border: 2px solid #200004;
+      box-shadow: 0 -2px 0 #ff4081;
+    }
+
+    .block.grass-sunflower {
+      background: linear-gradient(180deg, #fbc02d 0%, #7cb342 35%, #558b2f 36%, #33691e 45%, #795548 46%, #5d4037 100%);
+      border: 2px solid #3e2723;
+      box-shadow: 0 -2px 0 #ffee58;
+    }
+
+    /* Bare Dirt (After grass is eaten) */
     .block.dirt {
       background:
         radial-gradient(circle at 30% 40%, #755337 2px, transparent 3px),
@@ -387,10 +405,19 @@
       box-shadow: inset 1px 1px 0 #8d6443, inset -1px -1px 0 #2c1a0e;
     }
 
+    /* Nether Dirt / Netherrack */
+    .block.dirt-nether {
+      background:
+        radial-gradient(circle at 35% 35%, #900c1e 2px, transparent 3px),
+        radial-gradient(circle at 75% 65%, #5b0611 2px, transparent 3px),
+        linear-gradient(180deg, #6e0c19 0%, #3e040c 100%);
+      border: 2px solid #260207;
+      box-shadow: inset 1px 1px 0 #b3162b, inset -1px -1px 0 #1b0104;
+    }
+
     /* Mystery Block (Unrevealed) */
     .block.mystery {
-      background:
-        radial-gradient(circle at 50% 50%, #2f2538 0%, #1a1520 100%);
+      background: radial-gradient(circle at 50% 50%, #2f2538 0%, #1a1520 100%);
       border: 2px solid #3c2a47;
       box-shadow: inset 1px 1px 0 #5f4870, inset -1px -1px 0 #120d17;
       display: flex;
@@ -412,7 +439,7 @@
       100% { opacity: 1; transform: scale(1.1); color: #e1bee7; }
     }
 
-    /* Stone Block in Mystery Layer */
+    /* Stone Block */
     .block.stone {
       background:
         radial-gradient(circle at 25% 25%, #8f8f8f 2px, transparent 3px),
@@ -430,14 +457,53 @@
       100% { transform: scale(1); }
     }
 
-    /* Broken/Mined Stone crater */
     .block.broken-stone {
       background: #1e1e1e;
       border: 2px dashed #424242;
       opacity: 0.7;
     }
 
-    /* Regrowing Sprout indicator */
+    /* Lava Block (Nether Biome 10% chance) */
+    .block.lava {
+      background:
+        radial-gradient(circle at 35% 35%, #ffeb3b 2px, transparent 4px),
+        radial-gradient(circle at 70% 70%, #ff5722 3px, transparent 5px),
+        linear-gradient(135deg, #ff9800 0%, #d50000 70%, #ff3d00 100%);
+      border: 2px solid #bf360c;
+      box-shadow: 0 0 10px #ff3d00, inset 1px 1px 0 #ffeb3b, inset -1px -1px 0 #d50000;
+      animation: lava-bubble 0.8s infinite alternate ease-in-out;
+    }
+
+    @keyframes lava-bubble {
+      0% { transform: scale(0.96); filter: brightness(1); }
+      100% { transform: scale(1.04); filter: brightness(1.3); }
+    }
+
+    /* Golden Heart Container Block (Sunflower Plains Biome) */
+    .block.golden-heart {
+      background:
+        radial-gradient(circle at 50% 50%, #fff9c4 20%, transparent 60%),
+        linear-gradient(135deg, #fbc02d 0%, #f57f17 100%);
+      border: 2px solid #ff6f00;
+      box-shadow: 0 0 12px #ffd600, inset 1px 1px 0 #fffde7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: heart-beacon 1s infinite alternate;
+    }
+
+    .block.golden-heart::after {
+      content: "💛";
+      font-size: 13px;
+      filter: drop-shadow(0 0 4px #ff6f00);
+    }
+
+    @keyframes heart-beacon {
+      0% { transform: scale(0.92); }
+      100% { transform: scale(1.08); }
+    }
+
+    /* Regrowing indicator */
     .block.regrowing::before {
       content: "🌱";
       font-size: 9px;
@@ -459,7 +525,7 @@
     .button-group {
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       margin-top: 8px;
     }
@@ -467,7 +533,7 @@
     .btn {
       font-family: 'Press Start 2P', monospace;
       font-size: 10px;
-      padding: 12px 16px;
+      padding: 11px 14px;
       color: #fff;
       background-color: var(--grass-green);
       border: 2px solid #1e380c;
@@ -480,15 +546,23 @@
       gap: 6px;
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       background-color: #6da644;
       transform: translateY(-2px);
       box-shadow: 0 6px 0 #1e380c, 0 8px 0 #000;
     }
 
-    .btn:active {
+    .btn:active:not(:disabled) {
       transform: translateY(4px);
       box-shadow: 0 0 0 #1e380c, 0 2px 0 #000;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+      box-shadow: 0 2px 0 #000 !important;
+      transform: translateY(2px) !important;
     }
 
     .btn-mystery {
@@ -497,9 +571,31 @@
       box-shadow: 0 4px 0 #4a148c, 0 6px 0 #000;
     }
 
-    .btn-mystery:hover {
+    .btn-mystery:hover:not(:disabled) {
       background-color: #9c27b0;
       box-shadow: 0 6px 0 #4a148c, 0 8px 0 #000;
+    }
+
+    .btn-biome {
+      background-color: #0288d1;
+      border-color: #01579b;
+      box-shadow: 0 4px 0 #01579b, 0 6px 0 #000;
+    }
+
+    .btn-biome:hover:not(:disabled) {
+      background-color: #039be5;
+      box-shadow: 0 6px 0 #01579b, 0 8px 0 #000;
+    }
+
+    .btn-reset {
+      background-color: #d32f2f;
+      border-color: #b71c1c;
+      box-shadow: 0 4px 0 #b71c1c, 0 6px 0 #000;
+    }
+
+    .btn-reset:hover:not(:disabled) {
+      background-color: #f44336;
+      box-shadow: 0 6px 0 #b71c1c, 0 8px 0 #000;
     }
 
     .btn-secondary {
@@ -508,7 +604,7 @@
       box-shadow: 0 4px 0 #4e321e, 0 6px 0 #000;
     }
 
-    .btn-secondary:hover {
+    .btn-secondary:hover:not(:disabled) {
       background-color: #a1744f;
       box-shadow: 0 6px 0 #4e321e, 0 8px 0 #000;
     }
@@ -525,20 +621,20 @@
     }
 
     footer {
-      margin-top: 22px;
+      margin-top: 20px;
       font-size: 0.85rem;
       color: rgba(255, 255, 255, 0.4);
     }
   </style>
 </head>
-<body>
+<body class="theme-savanna" id="bodyElement">
 
   <main class="container">
     <div class="top-bar">
-      <div class="minecraft-badge">Biome: Savanna</div>
+      <div class="minecraft-badge badge-savanna" id="biomeBadge">Biome: Savanna</div>
 
-      <!-- Minecraft Hearts Display (3 Hearts) -->
-      <div class="hearts-bar" title="Giraffe has 3 hearts! Stone damages hearts, grass restores them.">
+      <!-- Minecraft Hearts Display (Supports up to 5 hearts!) -->
+      <div class="hearts-bar" id="heartsBar" title="Giraffe hearts! Stone costs 1 heart, Lava costs 2 hearts! Sunflower Plains can unlock up to 5 hearts!">
         <span class="hearts-label">HP:</span>
         <div id="heartsContainer">
           <!-- Rendered via JS -->
@@ -547,10 +643,10 @@
     </div>
 
     <h1>Hello, World! 👋</h1>
-    <p class="subtitle">Welcome to my new GitHub-hosted website! Meet our voxel savanna friend:</p>
+    <p class="subtitle" id="siteSubtitle">Welcome to my GitHub-hosted website! Meet our voxel giraffe:</p>
 
-    <div class="hint-bubble">
-      <span>🦒 Click the giraffe or blocks! Watch out for STONE in the Mystery Layer! ⚠️</span>
+    <div class="hint-bubble" id="hintBubble">
+      <span>🦒 Click the giraffe, explore Mystery Biomes 🎲, or watch out for Lava in the Nether!</span>
     </div>
 
     <!-- Giraffe Picture Frame -->
@@ -565,24 +661,26 @@
     <div class="terrain-container">
       <!-- Layer 1: Surface Lawn -->
       <div class="layer-header">
-        <span>LAYER 1: SURFACE GRASS</span>
+        <span id="surfaceLayerLabel">LAYER 1: SURFACE GRASS</span>
         <span id="surfaceCount">10/10 GRASS</span>
       </div>
       <div class="terrain-grid" id="surfaceGrid" title="Surface grass lawn"></div>
 
       <!-- Layer 2: Mystery Underlayer -->
       <div class="layer-header mystery-header">
-        <span>LAYER 2: MYSTERY LAYER (STONE & GRASS)</span>
+        <span id="mysteryLayerLabel">LAYER 2: MYSTERY LAYER (STONE & GRASS)</span>
         <span id="mysteryInfo">CLICK TO UNCOVER</span>
       </div>
       <div class="terrain-grid" id="mysteryGrid" title="Mystery subterranean layer"></div>
     </div>
 
-    <div class="status-text" id="statusMessage">🦒 The giraffe is grazing happily! Click the giraffe or blocks below.</div>
+    <div class="status-text" id="statusMessage">🦒 The giraffe is grazing in the Savanna! Click the giraffe or blocks below.</div>
 
     <div class="button-group">
       <button class="btn" onclick="feedSurfaceGrass()">Eat Grass 🌿</button>
-      <button class="btn btn-mystery" onclick="eatMysteryBlock()">Dig Mystery Block ❓</button>
+      <button class="btn btn-mystery" onclick="eatMysteryBlock()">Dig Mystery ❓</button>
+      <button class="btn btn-biome" id="biomeBtn" onclick="triggerMysteryBiome()">Mystery Biome 🎲</button>
+      <button class="btn btn-reset" onclick="resetGame()">Reset Game 🔄</button>
       <button class="btn btn-secondary" onclick="sayHello()">Say Hello! 💬</button>
     </div>
   </main>
@@ -634,18 +732,16 @@
         noise.connect(filter);
         filter.connect(gainNode);
         gainNode.connect(ctx.destination);
-
         noise.start();
       } catch (e) {}
     }
 
-    // Sound: Hard stone hit / pickaxe clang & hurt grunt
+    // Sound: Stone hit / pickaxe clang
     function playStoneHurtSound() {
       try {
         const ctx = getAudioContext();
         const now = ctx.currentTime;
 
-        // Metallic stone clang
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'square';
@@ -660,7 +756,6 @@
         osc.start();
         osc.stop(now + 0.25);
 
-        // Noise crack
         const bufferSize = ctx.sampleRate * 0.12;
         const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -678,12 +773,45 @@
       } catch (e) {}
     }
 
+    // Sound: Lava sizzling burn!
+    function playLavaSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const duration = 0.55;
+
+        // Low frequency sizzle + noise
+        const bufferSize = ctx.sampleRate * duration;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(900, now);
+        filter.frequency.linearRampToValueAtTime(250, now + duration);
+
+        const gainNode = ctx.createGain();
+        gainNode.gain.setValueAtTime(0.45, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+        noise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        noise.start();
+      } catch (e) {}
+    }
+
     // Sound: Healing / regrow chime
     function playHealSound() {
       try {
         const ctx = getAudioContext();
         const now = ctx.currentTime;
-        const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        const freqs = [523.25, 659.25, 783.99, 1046.50];
 
         freqs.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
@@ -703,61 +831,182 @@
       } catch (e) {}
     }
 
-    // Heart SVG icons (Minecraft pixel-art style)
-    const HEART_FULL_SVG = `<svg viewBox="0 0 9 9" class="heart full" width="20" height="20">
+    // Sound: Golden Heart Upgrade Fanfare
+    function playHeartUpgradeSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const chords = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+
+        chords.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+          gain.gain.setValueAtTime(0, now + idx * 0.08);
+          gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.08 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.42);
+        });
+      } catch (e) {}
+    }
+
+    // Sound: Biome switch warp sound
+    function playBiomeWarpSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.35);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } catch (e) {}
+    }
+
+    // Heart SVGs (Minecraft Pixel Art Style)
+    const HEART_FULL_SVG = `<svg viewBox="0 0 9 9" class="heart full" width="19" height="19">
       <path d="M2,0 h2 v1 h1 v-1 h2 v1 h1 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-2 h1 v-1 z" fill="#000"/>
       <path d="M2,1 h2 v1 h-2 z M5,1 h2 v1 h-2 z M1,2 h7 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-2 z" fill="#e53935"/>
       <path d="M2,2 h1 v1 h-1 z" fill="#ffffff"/>
       <path d="M2,3 h1 v1 h-1 z M5,3 h2 v1 h-2 z" fill="#b71c1c"/>
     </svg>`;
 
-    const HEART_EMPTY_SVG = `<svg viewBox="0 0 9 9" class="heart empty" width="20" height="20">
+    const HEART_EMPTY_SVG = `<svg viewBox="0 0 9 9" class="heart empty" width="19" height="19">
       <path d="M2,0 h2 v1 h1 v-1 h2 v1 h1 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-2 h1 v-1 z" fill="#000"/>
       <path d="M2,1 h2 v1 h-2 z M5,1 h2 v1 h-2 z M1,2 h7 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-2 z" fill="#37474f"/>
       <path d="M2,2 h1 v1 h-1 z" fill="#78909c"/>
       <path d="M2,3 h1 v1 h-1 z M5,3 h2 v1 h-2 z" fill="#212121"/>
     </svg>`;
 
+    // 4 Biomes Configuration
+    const BIOMES = {
+      savanna: {
+        id: 'savanna',
+        name: 'Savanna',
+        badgeText: 'Biome: Savanna',
+        badgeClass: 'badge-savanna',
+        bgTheme: 'theme-savanna',
+        surfaceGrassClass: 'grass-savanna',
+        dirtClass: 'dirt',
+        surfaceLabel: 'LAYER 1: SAVANNA GRASS',
+        mysteryLabel: 'LAYER 2: MYSTERY LAYER (STONE & GRASS)',
+        rollMystery: () => (Math.random() < 0.5 ? 'stone' : 'grass')
+      },
+      plains: {
+        id: 'plains',
+        name: 'Plains',
+        badgeText: 'Biome: Plains',
+        badgeClass: 'badge-plains',
+        bgTheme: 'theme-plains',
+        surfaceGrassClass: 'grass-plains',
+        dirtClass: 'dirt',
+        surfaceLabel: 'LAYER 1: PLAINS GRASS',
+        mysteryLabel: 'LAYER 2: ROCKY MYSTERY (MORE STONE!)',
+        rollMystery: () => (Math.random() < 0.75 ? 'stone' : 'grass') // plains has more stone!
+      },
+      nether: {
+        id: 'nether',
+        name: 'The Nether',
+        badgeText: 'Biome: The Nether 🔥',
+        badgeClass: 'badge-nether',
+        bgTheme: 'theme-nether',
+        surfaceGrassClass: 'grass-nether',
+        dirtClass: 'dirt-nether',
+        surfaceLabel: 'LAYER 1: CRIMSON NYLIUM',
+        mysteryLabel: 'LAYER 2: NETHER MYSTERY (10% LAVA ⚠️)',
+        rollMystery: () => {
+          const r = Math.random();
+          if (r < 0.10) return 'lava';  // 10% chance for Lava (costs 2 hearts!)
+          if (r < 0.65) return 'stone'; // nether stone
+          return 'grass';              // crimson fungus
+        }
+      },
+      sunflower: {
+        id: 'sunflower',
+        name: 'Sunflower Plains',
+        badgeText: 'Biome: Sunflower Plains 🌻',
+        badgeClass: 'badge-sunflower',
+        bgTheme: 'theme-sunflower',
+        surfaceGrassClass: 'grass-sunflower',
+        dirtClass: 'dirt',
+        surfaceLabel: 'LAYER 1: SUNFLOWER LAWN',
+        mysteryLabel: 'LAYER 2: GOLDEN MYSTERY (HEART CONTAINERS!)',
+        rollMystery: (canSpawnHeart) => {
+          const r = Math.random();
+          // If maxHearts < 5, 25% chance to discover a Golden Heart!
+          if (canSpawnHeart && r < 0.25) return 'golden-heart';
+          if (r < 0.55) return 'stone';
+          return 'grass';
+        }
+      }
+    };
+
     // Game State
-    const MAX_HEARTS = 3;
+    let currentBiome = 'savanna';
+    let maxHearts = 3;       // Can upgrade up to 5 hearts in Sunflower Plains!
     let currentHearts = 3;
     const TOTAL_COLUMNS = 10;
+
+    // Cooldown management
+    const BIOME_COOLDOWN_SEC = 30;
+    let biomeCooldownTimer = null;
+    let biomeCooldownRemaining = 0;
 
     // Layer 1: Surface Grass ('grass' or 'dirt')
     const surfaceState = Array(TOTAL_COLUMNS).fill('grass');
     const surfaceTimers = Array(TOTAL_COLUMNS).fill(null);
 
     // Layer 2: Mystery Layer
-    // State: 'mystery' (hidden), 'stone' (revealed stone), 'grass' (revealed grass), 'broken' (eaten stone)
-    // Hidden type is pre-rolled as either 'stone' (~50%) or 'grass' (~50%)
     const mysteryState = [];
     const mysteryTimers = Array(TOTAL_COLUMNS).fill(null);
 
-    function rollMysteryType() {
-      return Math.random() < 0.5 ? 'stone' : 'grass';
+    function rollMysteryForCurrentBiome() {
+      const biomeObj = BIOMES[currentBiome];
+      const canSpawnHeart = (currentBiome === 'sunflower' && maxHearts < 5);
+      return biomeObj.rollMystery(canSpawnHeart);
     }
 
     for (let i = 0; i < TOTAL_COLUMNS; i++) {
       mysteryState.push({
         status: 'mystery',
-        hiddenType: rollMysteryType()
+        hiddenType: rollMysteryForCurrentBiome()
       });
     }
 
     // DOM Elements
+    const bodyElement = document.getElementById('bodyElement');
+    const biomeBadge = document.getElementById('biomeBadge');
     const heartsContainer = document.getElementById('heartsContainer');
     const surfaceGrid = document.getElementById('surfaceGrid');
     const mysteryGrid = document.getElementById('mysteryGrid');
     const surfaceCount = document.getElementById('surfaceCount');
+    const surfaceLayerLabel = document.getElementById('surfaceLayerLabel');
+    const mysteryLayerLabel = document.getElementById('mysteryLayerLabel');
     const statusMessage = document.getElementById('statusMessage');
     const giraffeImage = document.getElementById('giraffeImage');
     const giraffeCard = document.getElementById('giraffeCard');
     const particleLayer = document.getElementById('particleLayer');
+    const biomeBtn = document.getElementById('biomeBtn');
 
-    // Render Hearts
+    // Render Hearts (Up to 5 hearts supported!)
     function renderHearts(popIndex = -1, isHeal = false) {
       heartsContainer.innerHTML = '';
-      for (let i = 0; i < MAX_HEARTS; i++) {
+      for (let i = 0; i < maxHearts; i++) {
         const wrap = document.createElement('span');
         wrap.innerHTML = i < currentHearts ? HEART_FULL_SVG : HEART_EMPTY_SVG;
         const svgEl = wrap.firstElementChild;
@@ -774,18 +1023,29 @@
       }
     }
 
+    // Update Biome UI & Themes
+    function applyBiomeTheme() {
+      const b = BIOMES[currentBiome];
+      bodyElement.className = b.bgTheme;
+      biomeBadge.className = `minecraft-badge ${b.badgeClass}`;
+      biomeBadge.textContent = b.badgeText;
+      surfaceLayerLabel.textContent = b.surfaceLabel;
+      mysteryLayerLabel.textContent = b.mysteryLabel;
+    }
+
     // Render Surface Lawn
     function initSurface() {
       surfaceGrid.innerHTML = '';
+      const b = BIOMES[currentBiome];
       for (let i = 0; i < TOTAL_COLUMNS; i++) {
-        const b = document.createElement('div');
-        b.className = 'block grass';
-        b.dataset.index = i;
-        b.addEventListener('click', (e) => {
+        const el = document.createElement('div');
+        el.className = `block ${surfaceState[i] === 'grass' ? b.surfaceGrassClass : b.dirtClass}`;
+        el.dataset.index = i;
+        el.addEventListener('click', (e) => {
           e.stopPropagation();
           eatSurfaceBlock(i);
         });
-        surfaceGrid.appendChild(b);
+        surfaceGrid.appendChild(el);
       }
       updateSurfaceCount();
     }
@@ -799,14 +1059,14 @@
     function initMystery() {
       mysteryGrid.innerHTML = '';
       for (let i = 0; i < TOTAL_COLUMNS; i++) {
-        const b = document.createElement('div');
-        b.className = 'block mystery';
-        b.dataset.index = i;
-        b.addEventListener('click', (e) => {
+        const el = document.createElement('div');
+        el.className = 'block mystery';
+        el.dataset.index = i;
+        el.addEventListener('click', (e) => {
           e.stopPropagation();
           revealAndEatMysteryBlock(i);
         });
-        mysteryGrid.appendChild(b);
+        mysteryGrid.appendChild(el);
       }
     }
 
@@ -816,18 +1076,21 @@
 
     // Floating Particles & Comic Text
     function spawnParticles(type, customText) {
-      // Comic text
       const floatEl = document.createElement('div');
       floatEl.className = `floating-text ${type}`;
       floatEl.textContent = customText;
       floatEl.style.left = '50%';
       floatEl.style.top = '65%';
       particleLayer.appendChild(floatEl);
-      setTimeout(() => floatEl.remove(), 900);
+      setTimeout(() => floatEl.remove(), 950);
 
       // Crumb pixels
-      const crumbColor = (type === 'damage') ? '#9e9e9e' : '#5b8c38';
-      for (let i = 0; i < 9; i++) {
+      let crumbColor = '#5b8c38';
+      if (type === 'damage') crumbColor = '#9e9e9e';
+      if (type === 'lava') crumbColor = '#ff5722';
+      if (type === 'upgrade') crumbColor = '#ffd600';
+
+      for (let i = 0; i < 10; i++) {
         const crumb = document.createElement('div');
         crumb.className = 'floating-crumb';
         crumb.style.backgroundColor = crumbColor;
@@ -847,15 +1110,20 @@
       }
     }
 
-    // Hurt effect on giraffe
     function triggerHurt() {
-      giraffeImage.classList.remove('hurt', 'munching');
+      giraffeImage.classList.remove('hurt', 'lava-burn', 'munching');
       void giraffeImage.offsetWidth;
       giraffeImage.classList.add('hurt');
       setTimeout(() => giraffeImage.classList.remove('hurt'), 450);
     }
 
-    // Munch animation
+    function triggerLavaBurn() {
+      giraffeImage.classList.remove('hurt', 'lava-burn', 'munching');
+      void giraffeImage.offsetWidth;
+      giraffeImage.classList.add('lava-burn');
+      setTimeout(() => giraffeImage.classList.remove('lava-burn'), 600);
+    }
+
     function triggerMunch() {
       giraffeImage.classList.remove('munching');
       void giraffeImage.offsetWidth;
@@ -865,8 +1133,8 @@
 
     // Recover hearts when eating grass
     function healHearts(amount = 1) {
-      if (currentHearts < MAX_HEARTS) {
-        currentHearts = Math.min(MAX_HEARTS, currentHearts + amount);
+      if (currentHearts < maxHearts) {
+        currentHearts = Math.min(maxHearts, currentHearts + amount);
         renderHearts(currentHearts - 1, true);
         playHealSound();
         spawnParticles('heal', '+1 ❤️ RESTORED!');
@@ -875,7 +1143,7 @@
       return false;
     }
 
-    // Damage heart when eating stone
+    // Damage heart when hitting stone (1 heart)
     function damageHeart() {
       if (currentHearts > 0) {
         currentHearts--;
@@ -883,39 +1151,74 @@
         renderHearts(lostIdx, false);
         playStoneHurtSound();
         triggerHurt();
-        spawnParticles('damage', '-1 💔 OUCH! STONE!');
+        spawnParticles('damage', '-1 💔 STONE!');
 
         if (currentHearts === 0) {
-          setStatus("😵 Oh no! Giraffe bit 3 stones and lost all 3 hearts! Click any GRASS block to nurse it back!");
+          setStatus("😵 Oh no! Giraffe bit 3 stones and lost its hearts! Click any GRASS block to nurse it back!");
         } else {
-          setStatus(`⚠️ Clang! Giraffe bit hard stone! ${currentHearts} heart${currentHearts > 1 ? 's' : ''} left!`);
+          setStatus(`⚠️ Clang! Hard stone! ${currentHearts}/${maxHearts} hearts left!`);
         }
+      }
+    }
+
+    // Damage hearts when hitting Lava in the Nether (Costs 2 hearts!)
+    function damageLava() {
+      if (currentHearts > 0) {
+        const heartsLost = Math.min(2, currentHearts);
+        currentHearts = Math.max(0, currentHearts - 2);
+        renderHearts(currentHearts, false);
+        playLavaSound();
+        triggerLavaBurn();
+        spawnParticles('lava', '🔥 -2 💔 LAVA BURN!');
+
+        if (currentHearts === 0) {
+          setStatus("🔥 SIZZLE! The giraffe burned in Lava and lost 2 hearts! Eat grass quickly to recover!");
+        } else {
+          setStatus(`🔥 OUCH! Lava burn cost 2 hearts! ${currentHearts}/${maxHearts} hearts left!`);
+        }
+      }
+    }
+
+    // Golden Heart Upgrade in Sunflower Plains (Permanent Heart Container up to 5)
+    function upgradeHeartContainer() {
+      if (maxHearts < 5) {
+        maxHearts++;
+        currentHearts = Math.min(maxHearts, currentHearts + 1);
+        renderHearts(maxHearts - 1, true);
+        playHeartUpgradeSound();
+        spawnParticles('upgrade', `💛 +1 MAX HEART! (${maxHearts}/5)`);
+        setStatus(`✨ SUNFLOWER MIRACLE! Found a Golden Heart Container! Max HP increased to ${maxHearts}/5!`);
+      } else {
+        // Already at 5 hearts: full heal bonus
+        healHearts(2);
+        playHeartUpgradeSound();
+        spawnParticles('upgrade', '✨ MAX HP RESTORED!');
+        setStatus("💛 Golden Heart tasted delicious! Health fully replenished!");
       }
     }
 
     // Action: Eat surface grass block
     function eatSurfaceBlock(index) {
       if (surfaceState[index] !== 'grass') {
-        setStatus("🌱 That grass patch is already regrowing!");
+        setStatus("🌱 That patch is already regrowing!");
         return;
       }
 
+      const b = BIOMES[currentBiome];
       triggerMunch();
       playCrunchSound();
       surfaceState[index] = 'dirt';
-      surfaceGrid.children[index].className = 'block dirt';
+      surfaceGrid.children[index].className = `block ${b.dirtClass}`;
       updateSurfaceCount();
 
-      // Eating grass restores hearts if hurt!
       const healed = healHearts(1);
       if (!healed) {
         spawnParticles('heal', '*NOM!* YUM!');
-        setStatus("🌿 Crunch! Delicious savanna grass munched!");
+        setStatus(`🌿 Crunch! Fresh ${b.name} greenery munched!`);
       } else {
-        setStatus("✨ The sweet grass restored a heart! Hearts go back! ❤️");
+        setStatus("✨ Sweet grass restored a heart! Hearts go back! ❤️");
       }
 
-      // Schedule grass regrowth
       if (surfaceTimers[index]) clearTimeout(surfaceTimers[index]);
       surfaceTimers[index] = setTimeout(() => {
         regrowSurfaceBlock(index);
@@ -930,7 +1233,8 @@
 
       setTimeout(() => {
         surfaceState[index] = 'grass';
-        blockEl.className = 'block grass';
+        const b = BIOMES[currentBiome];
+        blockEl.className = `block ${b.surfaceGrassClass}`;
         updateSurfaceCount();
       }, 400);
     }
@@ -940,7 +1244,6 @@
       const mystery = mysteryState[index];
       const blockEl = mysteryGrid.children[index];
 
-      // If already broken / regrowing
       if (mystery.status === 'broken') {
         setStatus("⏳ Mystery block is currently regenerating...");
         return;
@@ -949,38 +1252,47 @@
       const revealedType = mystery.hiddenType;
 
       if (revealedType === 'stone') {
-        // STONE: Eats stone, damages heart!
+        // STONE: -1 Heart
         mystery.status = 'broken';
         blockEl.className = 'block stone';
-
-        setTimeout(() => {
-          blockEl.className = 'block broken-stone';
-        }, 600);
-
+        setTimeout(() => { blockEl.className = 'block broken-stone'; }, 600);
         damageHeart();
+        scheduleMysteryReset(index);
 
-        // Reseal mystery block after delay
+      } else if (revealedType === 'lava') {
+        // LAVA: -2 Hearts! (Nether biome)
+        mystery.status = 'broken';
+        blockEl.className = 'block lava';
+        setTimeout(() => { blockEl.className = 'block broken-stone'; }, 700);
+        damageLava();
+        scheduleMysteryReset(index);
+
+      } else if (revealedType === 'golden-heart') {
+        // GOLDEN HEART: Permanent upgrade up to 5 hearts! (Sunflower Plains)
+        mystery.status = 'broken';
+        blockEl.className = 'block golden-heart';
+        triggerMunch();
+        upgradeHeartContainer();
+        setTimeout(() => { blockEl.className = 'block dirt'; }, 700);
         scheduleMysteryReset(index);
 
       } else {
-        // GRASS in mystery layer!
+        // GRASS in mystery layer
         triggerMunch();
         playCrunchSound();
         mystery.status = 'broken';
-        blockEl.className = 'block grass';
+        const b = BIOMES[currentBiome];
+        blockEl.className = `block ${b.surfaceGrassClass}`;
 
         const healed = healHearts(1);
         if (!healed) {
           spawnParticles('heal', '✨ SWEET GRASS!');
-          setStatus("🎉 Lucky find! The mystery layer contained delicious hidden grass!");
+          setStatus(`🎉 Lucky find! The ${b.name} mystery layer had hidden grass!`);
         } else {
           setStatus("❤️ Hidden grass discovered! Giraffe recovered a heart!");
         }
 
-        setTimeout(() => {
-          blockEl.className = 'block dirt';
-        }, 600);
-
+        setTimeout(() => { blockEl.className = `block ${b.dirtClass}`; }, 600);
         scheduleMysteryReset(index);
       }
     }
@@ -994,38 +1306,146 @@
         setTimeout(() => {
           mysteryState[index] = {
             status: 'mystery',
-            hiddenType: rollMysteryType()
+            hiddenType: rollMysteryForCurrentBiome()
           };
           blockEl.className = 'block mystery';
-          setStatus("✨ Mystery blocks have re-formed underground!");
         }, 400);
       }, 5000 + Math.random() * 1500);
     }
 
-    // Main Giraffe Click Handler
+    // Mystery Biome Generator with 30s Cooldown
+    // Probabilities:
+    // - Sunflower Plains: 20%
+    // - The Nether: 15% (smaller chance than plains)
+    // - Plains: 30%
+    // - Savanna: 35%
+    function triggerMysteryBiome() {
+      if (biomeCooldownRemaining > 0) return;
+
+      playBiomeWarpSound();
+
+      const roll = Math.random();
+      let chosenBiome = 'savanna';
+
+      if (roll < 0.20) {
+        chosenBiome = 'sunflower'; // 20%
+      } else if (roll < 0.35) {
+        chosenBiome = 'nether';    // 15% (smaller than plains)
+      } else if (roll < 0.65) {
+        chosenBiome = 'plains';    // 30%
+      } else {
+        chosenBiome = 'savanna';   // 35%
+      }
+
+      currentBiome = chosenBiome;
+      applyBiomeTheme();
+
+      // Refresh terrain for the new biome
+      for (let i = 0; i < TOTAL_COLUMNS; i++) {
+        surfaceState[i] = 'grass';
+        mysteryState[i] = {
+          status: 'mystery',
+          hiddenType: rollMysteryForCurrentBiome()
+        };
+      }
+      initSurface();
+      initMystery();
+
+      const b = BIOMES[currentBiome];
+      spawnParticles('upgrade', `WARP: ${b.name.toUpperCase()}!`);
+      setStatus(`🌍 Traveled to the ${b.name}! ${b.badgeText}`);
+
+      // Start 30-second cooldown
+      startBiomeCooldown(BIOME_COOLDOWN_SEC);
+    }
+
+    function startBiomeCooldown(seconds) {
+      biomeCooldownRemaining = seconds;
+      updateBiomeButtonText();
+
+      if (biomeCooldownTimer) clearInterval(biomeCooldownTimer);
+      biomeCooldownTimer = setInterval(() => {
+        biomeCooldownRemaining--;
+        if (biomeCooldownRemaining <= 0) {
+          clearInterval(biomeCooldownTimer);
+          biomeCooldownTimer = null;
+          biomeCooldownRemaining = 0;
+          updateBiomeButtonText();
+          setStatus("✨ Mystery Biome button is ready to travel again!");
+        } else {
+          updateBiomeButtonText();
+        }
+      }, 1000);
+    }
+
+    function updateBiomeButtonText() {
+      if (biomeCooldownRemaining > 0) {
+        biomeBtn.disabled = true;
+        biomeBtn.textContent = `Cooldown (${biomeCooldownRemaining}s)`;
+      } else {
+        biomeBtn.disabled = false;
+        biomeBtn.textContent = 'Mystery Biome 🎲';
+      }
+    }
+
+    // Reset Button: Resets Game, Grass, Biome, Cooldowns, and Hearts
+    function resetGame() {
+      // Clear timers
+      if (biomeCooldownTimer) {
+        clearInterval(biomeCooldownTimer);
+        biomeCooldownTimer = null;
+      }
+      biomeCooldownRemaining = 0;
+      updateBiomeButtonText();
+
+      surfaceTimers.forEach(t => t && clearTimeout(t));
+      mysteryTimers.forEach(t => t && clearTimeout(t));
+
+      // Reset Biome back to Savanna (original)
+      currentBiome = 'savanna';
+      applyBiomeTheme();
+
+      // Reset Hearts back to 3
+      maxHearts = 3;
+      currentHearts = 3;
+      renderHearts();
+
+      // Reset Grass & Mystery layers
+      for (let i = 0; i < TOTAL_COLUMNS; i++) {
+        surfaceState[i] = 'grass';
+        mysteryState[i] = {
+          status: 'mystery',
+          hiddenType: rollMysteryForCurrentBiome()
+        };
+      }
+      initSurface();
+      initMystery();
+
+      playHealSound();
+      spawnParticles('heal', '🔄 GAME RESET!');
+      setStatus("🔄 Game reset! Returned to Savanna with 3 hearts and full grass!");
+    }
+
+    // Main Giraffe Card Click Handler
     giraffeCard.addEventListener('click', () => {
-      // If at 0 hearts: prompt to find grass!
       if (currentHearts <= 0) {
-        // Giraffe will desperately seek any available surface grass to heal!
         const grassIndices = [];
         surfaceState.forEach((st, i) => { if (st === 'grass') grassIndices.push(i); });
         if (grassIndices.length > 0) {
           eatSurfaceBlock(grassIndices[0]);
           return;
         } else {
-          setStatus("😵 Giraffe has 0 hearts and needs grass! Click a mystery block to search for grass!");
+          setStatus("😵 Giraffe has 0 hearts! Click a mystery block or grass to heal!");
           return;
         }
       }
 
-      // Prioritize surface grass or alternate with mystery layer
       const availableSurface = [];
       surfaceState.forEach((st, i) => { if (st === 'grass') availableSurface.push(i); });
 
       const availableMystery = [];
       mysteryState.forEach((st, i) => { if (st.status === 'mystery') availableMystery.push(i); });
 
-      // 65% chance to eat surface grass if available, 35% chance to explore mystery layer
       if (availableSurface.length > 0 && (Math.random() < 0.65 || availableMystery.length === 0)) {
         const pick = availableSurface[Math.floor(Math.random() * availableSurface.length)];
         eatSurfaceBlock(pick);
@@ -1062,7 +1482,7 @@
       const messages = [
         "🦒 The giraffe nudged you gently with its blocky snout!",
         "✨ *Voxel noises* Hello, adventurer!",
-        "🌿 The giraffe happily munches on an acacia leaf block!",
+        "🌿 The giraffe happily munches on savanna leaves!",
         "👋 Welcome to the blocky world!"
       ];
       const randomMsg = messages[Math.floor(Math.random() * messages.length)];
@@ -1070,6 +1490,7 @@
     }
 
     // Initialize Game
+    applyBiomeTheme();
     renderHearts();
     initSurface();
     initMystery();

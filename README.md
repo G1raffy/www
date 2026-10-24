@@ -1,29 +1,33 @@
 # Giraffe World Website
 
-A playful static website hosted on GitHub Pages featuring a Minecraft-style voxel giraffe greeting visitors!
+A playful interactive website hosted on GitHub Pages featuring a Minecraft-style voxel giraffe greeting visitors!
 
 ## Features
 
-- **Minecraft Voxel Aesthetics**: Retro pixel font, savanna biome badge, and cubic layout.
-- **3 Hearts Health System**:
-  - The giraffe starts with 3 full Minecraft hearts displayed at the top (`HP: ❤️ ❤️ ❤️`).
-  - Animated heart pulses for taking damage and healing.
-- **Surface Grass Lawn (Layer 1)**:
-  - 10 interactive surface grass blocks.
-  - Eating surface grass restores lost hearts!
-  - Blocks dynamically regrow after a few seconds with a sprout animation (`🌱`) and chime.
-- **Mystery Sub-Layer (Layer 2 - Stone & Grass)**:
-  - Located directly beneath the lawn with hidden `?` mystery blocks.
-  - Clicking them (or clicking the giraffe) uncovers the underground block:
-    - **Stone**: Ouch! The giraffe bites hard stone, triggers a Minecraft red damage flash, plays a metallic clang/crunch, and loses 1 heart (`-1 💔`). If it eats stone 3 times, it loses all 3 hearts and gets dizzy!
-    - **Grass**: A sweet hidden grass block! It plays a crunch munch sound, restores a lost heart, and helps the hearts go back (`+1 ❤️`)!
-- **Sound & Animation**:
-  - Real-time procedural audio synthesis using Web Audio API (crunch sound, stone clatter, and healing chime).
-  - Floating pixel particles (`*NOM*`, `*CLANG*`, `+1 ❤️ RESTORED!`).
+- **Minecraft Voxel Aesthetics**: Retro pixel font, dynamic biome badge, and voxel layout.
+- **Dynamic Heart System (Up to 5 Hearts!)**:
+  - The giraffe starts with 3 classic Minecraft pixel hearts (`HP: ❤️ ❤️ ❤️`).
+  - **Stone**: Costs 1 heart (`-1 💔`).
+  - **Lava**: Found in the Nether, costs 2 hearts (`🔥 -2 💔`) with sizzling lava sound!
+  - **Grass**: Eating grass restores lost hearts!
+  - **Golden Heart Containers**: Discovered in Sunflower Plains, permanently increases maximum health up to **5 hearts** (`💛 +1 MAX HEART!`) for the whole game!
+- **Mystery Biome Button (30-Second Cooldown)**:
+  - Click **"Mystery Biome 🎲"** to warp to a new biome! Has a 30s countdown cooldown.
+  - **Savanna (35%)**: The classic warm savanna biome.
+  - **Plains (30%)**: Rocky grasslands with higher stone density underground.
+  - **The Nether (15%)**: Fiery Nether with crimson nylium and a **10% chance of Lava** in the mystery layer (-2 hearts!).
+  - **Sunflower Plains (20%)**: Peaceful golden biome with a chance to uncover Golden Heart Containers to reach up to 5 hearts!
+- **Surface Lawn & Mystery Underlayer**:
+  - **Layer 1 (Surface Grass)**: Dynamic turf matching the current biome that regrows after being eaten.
+  - **Layer 2 (Mystery Underlayer)**: Contains stones, grass, lava (in Nether), and golden hearts (in Sunflower Plains).
+- **Reset Button 🔄**:
+  - Instantly resets everything: returns to Savanna, resets hearts to 3, regrows all grass, re-rolls mystery blocks, and clears the 30-second biome cooldown immediately!
+- **Procedural Sound Effects**:
+  - Synthesized Web Audio API sound effects for eating crunches, stone clangs, lava sizzling, portal warping, and heart upgrade fanfares.
 
 ## Files
 
-- [index.html](index.html): The main interactive webpage.
+- [index.html](index.html): The complete interactive web application.
 - [giraffe.png](giraffe.png): A blocky, voxel-art Minecraft giraffe in a savanna biome.
 
 ## Deploying to GitHub Pages
@@ -31,7 +35,7 @@ A playful static website hosted on GitHub Pages featuring a Minecraft-style voxe
 1. Commit and push your changes:
    ```bash
    git add .
-   git commit -m "Add mystery layer with stone and grass, 3 hearts system"
+   git commit -m "Add 4 mystery biomes, 30s cooldown, lava, 5 hearts, and reset button"
    git push
    ```
 2. In your GitHub repository:

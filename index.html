@@ -646,7 +646,7 @@
     <p class="subtitle" id="siteSubtitle">Welcome to my GitHub-hosted website! Meet our voxel giraffe:</p>
 
     <div class="hint-bubble" id="hintBubble">
-      <span>🦒 Click the giraffe, explore Mystery Biomes 🎲, or watch out for Lava in the Nether!</span>
+      <span>🦒 Click the giraffe, explore Mystery Biomes 🎲 (10s cooldown!), or watch out for Lava in the Nether!</span>
     </div>
 
     <!-- Giraffe Picture Frame -->
@@ -962,10 +962,11 @@
     let currentHearts = 3;
     const TOTAL_COLUMNS = 10;
 
-    // Cooldown management
-    const BIOME_COOLDOWN_SEC = 30;
+    // Cooldown management (10-second cooldown)
+    const BIOME_COOLDOWN_SEC = 10;
     let biomeCooldownTimer = null;
     let biomeCooldownRemaining = 0;
+    const visitedBiomes = new Set(['savanna']);
 
     // Layer 1: Surface Grass ('grass' or 'dirt')
     const surfaceState = Array(TOTAL_COLUMNS).fill('grass');
@@ -1313,30 +1314,50 @@
       }, 5000 + Math.random() * 1500);
     }
 
-    // Mystery Biome Generator with 30s Cooldown
-    // Probabilities:
-    // - Sunflower Plains: 20%
-    // - The Nether: 15% (smaller chance than plains)
-    // - Plains: 30%
-    // - Savanna: 35%
+    // Mystery Biome Generator with 10s Cooldown
+    // - Different biomes go first (unvisited biomes prioritized, never repeat current biome)
+    // - Plains is less common (10% relative weight)
+    const BIOME_WEIGHTS = {
+      sunflower: 35,
+      nether: 35,
+      savanna: 20,
+      plains: 10 // Plains is less common
+    };
+
     function triggerMysteryBiome() {
       if (biomeCooldownRemaining > 0) return;
 
       playBiomeWarpSound();
 
-      const roll = Math.random();
-      let chosenBiome = 'savanna';
+      // Ensure we always pick a DIFFERENT biome than the current one
+      let candidates = Object.keys(BIOMES).filter(b => b !== currentBiome);
 
-      if (roll < 0.20) {
-        chosenBiome = 'sunflower'; // 20%
-      } else if (roll < 0.35) {
-        chosenBiome = 'nether';    // 15% (smaller than plains)
-      } else if (roll < 0.65) {
-        chosenBiome = 'plains';    // 30%
+      // Make different unvisited biomes go first!
+      const unvisited = candidates.filter(b => !visitedBiomes.has(b));
+      if (unvisited.length > 0) {
+        candidates = unvisited;
       } else {
-        chosenBiome = 'savanna';   // 35%
+        visitedBiomes.clear();
+        visitedBiomes.add(currentBiome);
       }
 
+      // Weighted random selection among candidates (Plains is less common)
+      let totalWeight = 0;
+      candidates.forEach(b => { totalWeight += BIOME_WEIGHTS[b] || 10; });
+
+      let randomVal = Math.random() * totalWeight;
+      let chosenBiome = candidates[0];
+
+      for (const b of candidates) {
+        const weight = BIOME_WEIGHTS[b] || 10;
+        if (randomVal < weight) {
+          chosenBiome = b;
+          break;
+        }
+        randomVal -= weight;
+      }
+
+      visitedBiomes.add(chosenBiome);
       currentBiome = chosenBiome;
       applyBiomeTheme();
 
@@ -1355,7 +1376,7 @@
       spawnParticles('upgrade', `WARP: ${b.name.toUpperCase()}!`);
       setStatus(`🌍 Traveled to the ${b.name}! ${b.badgeText}`);
 
-      // Start 30-second cooldown
+      // Start 10-second cooldown
       startBiomeCooldown(BIOME_COOLDOWN_SEC);
     }
 
@@ -1403,6 +1424,8 @@
 
       // Reset Biome back to Savanna (original)
       currentBiome = 'savanna';
+      visitedBiomes.clear();
+      visitedBiomes.add('savanna');
       applyBiomeTheme();
 
       // Reset Hearts back to 3

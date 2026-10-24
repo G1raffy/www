@@ -269,7 +269,7 @@
       display: block;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
-      transition: filter 0.15s ease, transform 0.2s;
+      transition: filter 0.15s ease, transform 0.2s, opacity 0.2s ease;
       transform-origin: 50% 80%;
     }
 
@@ -1091,6 +1091,7 @@
       savanna: {
         id: 'savanna',
         name: 'Savanna',
+        imageSrc: 'giraffe.png',
         badgeText: 'Biome: Savanna',
         badgeClass: 'badge-savanna',
         bgTheme: 'theme-savanna',
@@ -1103,6 +1104,7 @@
       plains: {
         id: 'plains',
         name: 'Plains',
+        imageSrc: 'giraffe_plains.png',
         badgeText: 'Biome: Plains',
         badgeClass: 'badge-plains',
         bgTheme: 'theme-plains',
@@ -1115,6 +1117,7 @@
       nether: {
         id: 'nether',
         name: 'The Nether',
+        imageSrc: 'giraffe_nether.png',
         badgeText: 'Biome: The Nether 🔥',
         badgeClass: 'badge-nether',
         bgTheme: 'theme-nether',
@@ -1132,6 +1135,7 @@
       sunflower: {
         id: 'sunflower',
         name: 'Sunflower Plains',
+        imageSrc: 'giraffe_sunflower.png',
         badgeText: 'Biome: Sunflower Plains 🌻',
         badgeClass: 'badge-sunflower',
         bgTheme: 'theme-sunflower',
@@ -1150,6 +1154,7 @@
       void: {
         id: 'void',
         name: 'The Void',
+        imageSrc: 'giraffe_void.png',
         badgeText: 'Biome: The Void 🌌',
         badgeClass: 'badge-void',
         bgTheme: 'theme-void',
@@ -1265,6 +1270,19 @@
       biomeBadge.textContent = b.badgeText;
       surfaceLayerLabel.textContent = b.surfaceLabel;
       mysteryLayerLabel.textContent = b.mysteryLabel;
+
+      // Dynamically change the picture in the middle of the screen to match the biome!
+      if (b.imageSrc && giraffeImage) {
+        const targetSrc = b.imageSrc;
+        if (!giraffeImage.src.endsWith(targetSrc)) {
+          giraffeImage.style.opacity = '0.15';
+          setTimeout(() => {
+            giraffeImage.src = targetSrc;
+            giraffeImage.alt = `Minecraft giraffe in the ${b.name} biome`;
+            giraffeImage.style.opacity = '1';
+          }, 120);
+        }
+      }
     }
 
     // Render Surface Lawn

@@ -138,6 +138,20 @@
     .heart.hurt-pop { animation: heart-flash 0.4s ease; }
     .heart.heal-pop { animation: heart-revive 0.5s ease; }
 
+    .heart.golden {
+      filter: drop-shadow(0 0 4px rgba(255, 214, 0, 0.85));
+    }
+
+    .heart.shatter {
+      animation: heart-shatter 0.45s forwards ease-out;
+    }
+
+    @keyframes heart-shatter {
+      0% { transform: scale(1.3); opacity: 1; }
+      50% { transform: scale(1.6) translateY(-8px) rotate(18deg); opacity: 0.7; filter: brightness(1.6); }
+      100% { transform: scale(0.1) translateY(14px) rotate(45deg); opacity: 0; }
+    }
+
     @keyframes heart-flash {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.4) translateY(-4px); }
@@ -646,7 +660,7 @@
     <p class="subtitle" id="siteSubtitle">Welcome to my GitHub-hosted website! Meet our voxel giraffe:</p>
 
     <div class="hint-bubble" id="hintBubble">
-      <span>🦒 Click the giraffe, explore Mystery Biomes 🎲 (10s cooldown!), or watch out for Lava in the Nether!</span>
+      <span>🦒 Damage breaks Extra Golden Hearts from the Sunflower Lawn until you find them again! ⚠️</span>
     </div>
 
     <!-- Giraffe Picture Frame -->
@@ -893,6 +907,15 @@
       <path d="M2,3 h1 v1 h-1 z M5,3 h2 v1 h-2 z" fill="#212121"/>
     </svg>`;
 
+    // Golden Extra Heart SVG (Minecraft Absorption Style)
+    const HEART_GOLDEN_SVG = `<svg viewBox="0 0 9 9" class="heart golden" width="19" height="19">
+      <path d="M2,0 h2 v1 h1 v-1 h2 v1 h1 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-2 h1 v-1 z" fill="#000"/>
+      <path d="M2,1 h2 v1 h-2 z M5,1 h2 v1 h-2 z M1,2 h7 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-2 z" fill="#ffb300"/>
+      <path d="M2,2 h1 v1 h-1 z" fill="#ffffff"/>
+      <path d="M3,2 h1 v1 h-1 z M5,2 h2 v1 h-2 z M2,3 h1 v1 h-1 z" fill="#fff59d"/>
+      <path d="M5,3 h2 v1 h-2 z M3,4 h3 v1 h-3 z M4,5 h1 v1 h-1 z" fill="#ff8f00"/>
+    </svg>`;
+
     // 4 Biomes Configuration
     const BIOMES = {
       savanna: {
@@ -948,18 +971,19 @@
         mysteryLabel: 'LAYER 2: GOLDEN MYSTERY (HEART CONTAINERS!)',
         rollMystery: (canSpawnHeart) => {
           const r = Math.random();
-          // If maxHearts < 5, 25% chance to discover a Golden Heart!
-          if (canSpawnHeart && r < 0.25) return 'golden-heart';
-          if (r < 0.55) return 'stone';
+          // If extraHearts < 2, 30% chance to discover a Golden Heart!
+          if (canSpawnHeart && r < 0.30) return 'golden-heart';
+          if (r < 0.60) return 'stone';
           return 'grass';
         }
       }
     };
 
-    // Game State
+    // Game State: 3 Base Red Hearts + up to 2 Extra Golden Hearts from Sunflower Lawn
+    const BASE_HEARTS = 3;
+    let currentBaseHearts = 3; // 0 to 3
+    let extraHearts = 0;       // 0 to 2 (lost on damage until found again in Sunflower Lawn)
     let currentBiome = 'savanna';
-    let maxHearts = 3;       // Can upgrade up to 5 hearts in Sunflower Plains!
-    let currentHearts = 3;
     const TOTAL_COLUMNS = 10;
 
     // Cooldown management (10-second cooldown)
@@ -978,7 +1002,8 @@
 
     function rollMysteryForCurrentBiome() {
       const biomeObj = BIOMES[currentBiome];
-      const canSpawnHeart = (currentBiome === 'sunflower' && maxHearts < 5);
+      // Golden hearts spawn in Sunflower Plains if player has lost any extra hearts (extraHearts < 2)
+      const canSpawnHeart = (currentBiome === 'sunflower' && extraHearts < 2);
       return biomeObj.rollMystery(canSpawnHeart);
     }
 
@@ -1004,20 +1029,41 @@
     const particleLayer = document.getElementById('particleLayer');
     const biomeBtn = document.getElementById('biomeBtn');
 
-    // Render Hearts (Up to 5 hearts supported!)
-    function renderHearts(popIndex = -1, isHeal = false) {
+    // Render Hearts: 3 Base Hearts + any Extra Golden Hearts from Sunflower Lawn
+    function renderHearts(popIndex = -1, isHeal = false, isShatter = false) {
       heartsContainer.innerHTML = '';
-      for (let i = 0; i < maxHearts; i++) {
+
+      // 1. Render 3 Base Red Hearts
+      for (let i = 0; i < BASE_HEARTS; i++) {
         const wrap = document.createElement('span');
-        wrap.innerHTML = i < currentHearts ? HEART_FULL_SVG : HEART_EMPTY_SVG;
+        wrap.innerHTML = (i < currentBaseHearts) ? HEART_FULL_SVG : HEART_EMPTY_SVG;
         const svgEl = wrap.firstElementChild;
-        if (i === popIndex) {
+        if (i === popIndex && !isShatter) {
           svgEl.classList.add(isHeal ? 'heal-pop' : 'hurt-pop');
         }
         heartsContainer.appendChild(svgEl);
       }
 
-      if (currentHearts <= 0) {
+      // 2. Render Extra Golden Hearts (from Sunflower Lawn)
+      for (let i = 0; i < extraHearts; i++) {
+        const wrap = document.createElement('span');
+        wrap.innerHTML = HEART_GOLDEN_SVG;
+        const svgEl = wrap.firstElementChild;
+        if (BASE_HEARTS + i === popIndex) {
+          svgEl.classList.add(isHeal ? 'heal-pop' : (isShatter ? 'shatter' : 'hurt-pop'));
+        }
+        heartsContainer.appendChild(svgEl);
+      }
+
+      // Update HP label text
+      const totalHP = currentBaseHearts + extraHearts;
+      const totalMax = BASE_HEARTS + extraHearts;
+      const labelEl = document.querySelector('.hearts-label');
+      if (labelEl) {
+        labelEl.textContent = (extraHearts > 0) ? `HP (${totalHP}/${totalMax}):` : 'HP:';
+      }
+
+      if (currentBaseHearts <= 0 && extraHearts <= 0) {
         giraffeImage.classList.add('dizzy');
       } else {
         giraffeImage.classList.remove('dizzy');
@@ -1132,11 +1178,11 @@
       setTimeout(() => giraffeImage.classList.remove('munching'), 500);
     }
 
-    // Recover hearts when eating grass
+    // Recover base hearts when eating grass (extra golden hearts must be found in Sunflower Lawn)
     function healHearts(amount = 1) {
-      if (currentHearts < maxHearts) {
-        currentHearts = Math.min(maxHearts, currentHearts + amount);
-        renderHearts(currentHearts - 1, true);
+      if (currentBaseHearts < BASE_HEARTS) {
+        currentBaseHearts = Math.min(BASE_HEARTS, currentBaseHearts + amount);
+        renderHearts(currentBaseHearts - 1, true);
         playHealSound();
         spawnParticles('heal', '+1 ❤️ RESTORED!');
         return true;
@@ -1144,57 +1190,86 @@
       return false;
     }
 
-    // Damage heart when hitting stone (1 heart)
+    // Damage heart when hitting stone (1 damage)
+    // Deletes an Extra Golden Heart first if player has any, otherwise damages base hearts!
     function damageHeart() {
-      if (currentHearts > 0) {
-        currentHearts--;
-        const lostIdx = currentHearts;
+      // 1. If giraffe has extra golden hearts from Sunflower Lawn, delete one extra heart!
+      if (extraHearts > 0) {
+        extraHearts--;
+        playStoneHurtSound();
+        triggerHurt();
+        renderHearts(BASE_HEARTS + extraHearts, false, true);
+        spawnParticles('damage', '-1 💔 EXTRA HEART LOST!');
+
+        const remainingTotal = currentBaseHearts + extraHearts;
+        setStatus(`⚠️ Stone broke an Extra Golden Heart! Travel to Sunflower Plains to get it back! (${remainingTotal} HP remaining)`);
+        return;
+      }
+
+      // 2. Otherwise damage base red hearts
+      if (currentBaseHearts > 0) {
+        currentBaseHearts--;
+        const lostIdx = currentBaseHearts;
         renderHearts(lostIdx, false);
         playStoneHurtSound();
         triggerHurt();
         spawnParticles('damage', '-1 💔 STONE!');
 
-        if (currentHearts === 0) {
-          setStatus("😵 Oh no! Giraffe bit 3 stones and lost its hearts! Click any GRASS block to nurse it back!");
+        if (currentBaseHearts === 0) {
+          setStatus("😵 Oh no! Giraffe bit 3 stones and lost all base hearts! Click any GRASS block to nurse it back!");
         } else {
-          setStatus(`⚠️ Clang! Hard stone! ${currentHearts}/${maxHearts} hearts left!`);
+          setStatus(`⚠️ Clang! Hard stone! ${currentBaseHearts}/3 base hearts left!`);
         }
       }
     }
 
     // Damage hearts when hitting Lava in the Nether (Costs 2 hearts!)
+    // Deletes extra golden hearts first!
     function damageLava() {
-      if (currentHearts > 0) {
-        const heartsLost = Math.min(2, currentHearts);
-        currentHearts = Math.max(0, currentHearts - 2);
-        renderHearts(currentHearts, false);
-        playLavaSound();
-        triggerLavaBurn();
-        spawnParticles('lava', '🔥 -2 💔 LAVA BURN!');
+      playLavaSound();
+      triggerLavaBurn();
 
-        if (currentHearts === 0) {
-          setStatus("🔥 SIZZLE! The giraffe burned in Lava and lost 2 hearts! Eat grass quickly to recover!");
-        } else {
-          setStatus(`🔥 OUCH! Lava burn cost 2 hearts! ${currentHearts}/${maxHearts} hearts left!`);
+      if (extraHearts >= 2) {
+        extraHearts -= 2;
+        renderHearts(-1, false, true);
+        spawnParticles('lava', '🔥 -2 💛 BOTH EXTRA HEARTS BROKEN!');
+        setStatus(`🔥 Lava burned away both Extra Golden Hearts! Travel to Sunflower Plains to get them back! (${currentBaseHearts} HP remaining)`);
+      } else if (extraHearts === 1) {
+        extraHearts = 0;
+        currentBaseHearts = Math.max(0, currentBaseHearts - 1);
+        renderHearts(currentBaseHearts, false);
+        spawnParticles('lava', '🔥 -2 💔 EXTRA & BASE HEART LOST!');
+        setStatus(`🔥 Lava burned 1 Extra Heart and 1 Base Heart! (${currentBaseHearts}/3 base hearts left)`);
+      } else {
+        if (currentBaseHearts > 0) {
+          currentBaseHearts = Math.max(0, currentBaseHearts - 2);
+          renderHearts(currentBaseHearts, false);
+          spawnParticles('lava', '🔥 -2 💔 LAVA BURN!');
+
+          if (currentBaseHearts === 0) {
+            setStatus("🔥 SIZZLE! The giraffe burned in Lava and lost all hearts! Eat grass quickly to recover!");
+          } else {
+            setStatus(`🔥 OUCH! Lava burn cost 2 hearts! ${currentBaseHearts}/3 base hearts left!`);
+          }
         }
       }
     }
 
-    // Golden Heart Upgrade in Sunflower Plains (Permanent Heart Container up to 5)
+    // Golden Heart in Sunflower Plains: Adds an extra heart back (up to 5 hearts total: 3 base + 2 extra)
     function upgradeHeartContainer() {
-      if (maxHearts < 5) {
-        maxHearts++;
-        currentHearts = Math.min(maxHearts, currentHearts + 1);
-        renderHearts(maxHearts - 1, true);
+      if (extraHearts < 2) {
+        extraHearts++;
+        currentBaseHearts = BASE_HEARTS; // Also restores any damaged base hearts!
+        renderHearts(BASE_HEARTS + extraHearts - 1, true);
         playHeartUpgradeSound();
-        spawnParticles('upgrade', `💛 +1 MAX HEART! (${maxHearts}/5)`);
-        setStatus(`✨ SUNFLOWER MIRACLE! Found a Golden Heart Container! Max HP increased to ${maxHearts}/5!`);
+        spawnParticles('upgrade', `💛 +1 EXTRA HEART! (${BASE_HEARTS + extraHearts}/5)`);
+        setStatus(`✨ SUNFLOWER MIRACLE! Restored an Extra Golden Heart! Total HP: ${BASE_HEARTS + extraHearts}/5!`);
       } else {
-        // Already at 5 hearts: full heal bonus
-        healHearts(2);
+        currentBaseHearts = BASE_HEARTS;
+        renderHearts();
         playHeartUpgradeSound();
-        spawnParticles('upgrade', '✨ MAX HP RESTORED!');
-        setStatus("💛 Golden Heart tasted delicious! Health fully replenished!");
+        spawnParticles('upgrade', '✨ FULL 5 HEARTS!');
+        setStatus("💛 Already at maximum 5 hearts! Full health restored!");
       }
     }
 
@@ -1428,9 +1503,9 @@
       visitedBiomes.add('savanna');
       applyBiomeTheme();
 
-      // Reset Hearts back to 3
-      maxHearts = 3;
-      currentHearts = 3;
+      // Reset Hearts back to 3 Base Hearts (0 extra)
+      currentBaseHearts = 3;
+      extraHearts = 0;
       renderHearts();
 
       // Reset Grass & Mystery layers
@@ -1451,7 +1526,7 @@
 
     // Main Giraffe Card Click Handler
     giraffeCard.addEventListener('click', () => {
-      if (currentHearts <= 0) {
+      if (currentBaseHearts <= 0 && extraHearts <= 0) {
         const grassIndices = [];
         surfaceState.forEach((st, i) => { if (st === 'grass') grassIndices.push(i); });
         if (grassIndices.length > 0) {

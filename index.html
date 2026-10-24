@@ -62,6 +62,10 @@
       background: radial-gradient(circle at top, #c0ca33 0%, #33691e 65%, #102507 100%);
     }
 
+    body.theme-void {
+      background: radial-gradient(circle at top, #3c096c 0%, #1a0033 60%, #030014 100%);
+    }
+
     .container {
       max-width: 680px;
       width: 100%;
@@ -73,7 +77,30 @@
       text-align: center;
       backdrop-filter: blur(8px);
       position: relative;
-      transition: border-color 0.4s ease;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .container.shake {
+      animation: screen-shake 0.5s ease-in-out;
+    }
+
+    @keyframes screen-shake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-10px, 8px) rotate(-1deg); }
+      40% { transform: translate(10px, -8px) rotate(1deg); }
+      60% { transform: translate(-6px, 4px); }
+      80% { transform: translate(6px, -4px); }
+    }
+
+    .container.void-cursed {
+      border-color: #9d4edd !important;
+      box-shadow: 0 0 30px rgba(157, 78, 221, 0.85), inset 0 0 15px rgba(123, 44, 191, 0.5) !important;
+      animation: curse-pulse 1.8s infinite alternate;
+    }
+
+    @keyframes curse-pulse {
+      0% { box-shadow: 0 0 20px rgba(157, 78, 221, 0.6); }
+      100% { box-shadow: 0 0 38px rgba(224, 170, 255, 0.95); }
     }
 
     .top-bar {
@@ -103,6 +130,12 @@
     .badge-plains { background: #4caf50; color: #fff; text-shadow: 1px 1px 0 #000; }
     .badge-nether { background: #d32f2f; color: #fff; text-shadow: 1px 1px 0 #000; animation: nether-pulse 1.8s infinite alternate; }
     .badge-sunflower { background: #ffd600; color: #212121; }
+    .badge-void { background: #7b2cbf; color: #fff; text-shadow: 1px 1px 0 #000; animation: void-pulse 1.8s infinite alternate; }
+
+    @keyframes void-pulse {
+      0% { box-shadow: 2px 2px 0 #000, 0 0 8px rgba(157, 78, 221, 0.7); }
+      100% { box-shadow: 2px 2px 0 #000, 0 0 18px rgba(224, 170, 255, 1); }
+    }
 
     @keyframes nether-pulse {
       0% { box-shadow: 2px 2px 0 #000, 0 0 8px rgba(255, 87, 34, 0.6); }
@@ -328,6 +361,8 @@
     .floating-text.damage { color: #ff5252; text-shadow: 2px 2px 0 #000, -1px -1px 0 #b71c1c; }
     .floating-text.lava { color: #ffab00; text-shadow: 2px 2px 0 #000, 0 0 8px #ff3d00; }
     .floating-text.upgrade { color: #ffd600; text-shadow: 2px 2px 0 #000, 0 0 10px #ffea00; }
+    .floating-text.boom { color: #ff1744; text-shadow: 2px 2px 0 #000, 0 0 12px #d50000; font-size: 13px; }
+    .floating-text.curse { color: #e0aaff; text-shadow: 2px 2px 0 #000, 0 0 12px #7b2cbf; }
 
     @keyframes float-up {
       0% { transform: translate(-50%, 0) scale(0.8); opacity: 0; }
@@ -409,6 +444,12 @@
       box-shadow: 0 -2px 0 #ffee58;
     }
 
+    .block.grass-void {
+      background: linear-gradient(180deg, #9d4edd 0%, #7b2cbf 35%, #5a189a 36%, #3c096c 45%, #10002b 46%, #030014 100%);
+      border: 2px solid #240046;
+      box-shadow: 0 -2px 0 #e0aaff;
+    }
+
     /* Bare Dirt (After grass is eaten) */
     .block.dirt {
       background:
@@ -417,6 +458,16 @@
         linear-gradient(180deg, #6e4c32 0%, #543922 100%);
       border: 2px solid #2c1a0e;
       box-shadow: inset 1px 1px 0 #8d6443, inset -1px -1px 0 #2c1a0e;
+    }
+
+    /* Void Dirt / End Stone Bedrock */
+    .block.dirt-void {
+      background:
+        radial-gradient(circle at 35% 35%, #3c096c 2px, transparent 3px),
+        radial-gradient(circle at 75% 65%, #10002b 2px, transparent 3px),
+        linear-gradient(180deg, #1f0038 0%, #050010 100%);
+      border: 2px solid #10002b;
+      box-shadow: inset 1px 1px 0 #5a189a, inset -1px -1px 0 #000;
     }
 
     /* Nether Dirt / Netherrack */
@@ -515,6 +566,29 @@
     @keyframes heart-beacon {
       0% { transform: scale(0.92); }
       100% { transform: scale(1.08); }
+    }
+
+    /* Boombox Block (The Void Biome Mystery Surprise!) */
+    .block.boombox {
+      background:
+        radial-gradient(circle at 50% 50%, #212121 28%, #ff1744 30%, #3e2723 35%, #1a0033 100%);
+      border: 2px solid #d50000;
+      box-shadow: 0 0 12px #ff1744, inset 1px 1px 0 #ff8a80, inset -1px -1px 0 #b71c1c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: boombox-pulse 0.5s infinite alternate ease-in-out;
+    }
+
+    .block.boombox::after {
+      content: "📻";
+      font-size: 13px;
+      filter: drop-shadow(0 0 5px #ff1744);
+    }
+
+    @keyframes boombox-pulse {
+      0% { transform: scale(0.93); filter: brightness(1); }
+      100% { transform: scale(1.07); filter: brightness(1.35); }
     }
 
     /* Regrowing indicator */
@@ -648,7 +722,7 @@
       <div class="minecraft-badge badge-savanna" id="biomeBadge">Biome: Savanna</div>
 
       <!-- Minecraft Hearts Display (Supports up to 5 hearts!) -->
-      <div class="hearts-bar" id="heartsBar" title="Giraffe hearts! Stone costs 1 heart, Lava costs 2 hearts! Sunflower Plains can unlock up to 5 hearts!">
+      <div class="hearts-bar" id="heartsBar" title="Giraffe hearts! First 3 are Red, 4th & 5th are Yellow Golden Hearts. Beware the Boombox and 30s Void Decay!">
         <span class="hearts-label">HP:</span>
         <div id="heartsContainer">
           <!-- Rendered via JS -->
@@ -660,7 +734,7 @@
     <p class="subtitle" id="siteSubtitle">Welcome to my GitHub-hosted website! Meet our voxel giraffe:</p>
 
     <div class="hint-bubble" id="hintBubble">
-      <span>🦒 Damage breaks Extra Golden Hearts from the Sunflower Lawn until you find them again! ⚠️</span>
+      <span>🌌 Travel to The Void for the Boombox 📻! ⚠️ Boombox blasts 2 hearts & can inflict a 30s decay curse!</span>
     </div>
 
     <!-- Giraffe Picture Frame -->
@@ -892,6 +966,102 @@
       } catch (e) {}
     }
 
+    // Sound: Boombox Explosion (Massive Bass Detonation)
+    function playBoomboxSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        // Low booming square/saw wave
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(28, now + 0.55);
+
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.56);
+
+        // Harsh blast noise burst
+        const bufferSize = ctx.sampleRate * 0.45;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1200, now);
+        filter.frequency.exponentialRampToValueAtTime(200, now + 0.45);
+
+        const nGain = ctx.createGain();
+        nGain.gain.setValueAtTime(0.6, now);
+        nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+        noise.connect(filter);
+        filter.connect(nGain);
+        nGain.connect(ctx.destination);
+        noise.start(now);
+      } catch (e) {}
+    }
+
+    // Sound: Eerie Void Curse Trigger
+    function playVoidCurseSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(450, now);
+        osc.frequency.linearRampToValueAtTime(110, now + 0.8);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(600, now);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.85);
+      } catch (e) {}
+    }
+
+    // Sound: Heart Turning Black Decay Tick
+    function playDecayTickSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.25);
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.26);
+      } catch (e) {}
+    }
+
     // Heart SVGs (Minecraft Pixel Art Style)
     const HEART_FULL_SVG = `<svg viewBox="0 0 9 9" class="heart full" width="19" height="19">
       <path d="M2,0 h2 v1 h1 v-1 h2 v1 h1 v2 h-1 v1 h-1 v1 h-1 v1 h-1 v1 h-1 v-1 h-1 v-1 h-1 v-1 h-1 v-2 h1 v-1 z" fill="#000"/>
@@ -975,6 +1145,23 @@
           if (canSpawnHeart && r < 0.30) return 'golden-heart';
           if (r < 0.60) return 'stone';
           return 'grass';
+        }
+      },
+      void: {
+        id: 'void',
+        name: 'The Void',
+        badgeText: 'Biome: The Void 🌌',
+        badgeClass: 'badge-void',
+        bgTheme: 'theme-void',
+        surfaceGrassClass: 'grass-void',
+        dirtClass: 'dirt-void',
+        surfaceLabel: 'LAYER 1: END STONE & VOID TURF',
+        mysteryLabel: 'LAYER 2: VOID MYSTERY (BOOMBOX SURPRISE 📻)',
+        rollMystery: () => {
+          const r = Math.random();
+          if (r < 0.25) return 'boombox'; // 25% chance of Boombox surprise!
+          if (r < 0.65) return 'stone';   // Void stone
+          return 'grass';                // Void moss
         }
       }
     };
@@ -1136,6 +1323,8 @@
       if (type === 'damage') crumbColor = '#9e9e9e';
       if (type === 'lava') crumbColor = '#ff5722';
       if (type === 'upgrade') crumbColor = '#ffd600';
+      if (type === 'boom') crumbColor = '#ff1744';
+      if (type === 'curse') crumbColor = '#7b2cbf';
 
       for (let i = 0; i < 10; i++) {
         const crumb = document.createElement('div');
@@ -1176,6 +1365,82 @@
       void giraffeImage.offsetWidth;
       giraffeImage.classList.add('munching');
       setTimeout(() => giraffeImage.classList.remove('munching'), 500);
+    }
+
+    // Void Curse State (30 seconds: turns 1 heart black every 10s)
+    let voidCurseTimer = null;
+    let voidCurseRemaining = 0;
+
+    function startVoidCurse(durationSeconds = 30) {
+      if (voidCurseTimer) {
+        clearInterval(voidCurseTimer);
+        voidCurseTimer = null;
+      }
+
+      voidCurseRemaining = durationSeconds;
+      const containerEl = document.querySelector('.container');
+      if (containerEl) containerEl.classList.add('void-cursed');
+
+      playVoidCurseSound();
+      spawnParticles('curse', '☠️ 30s VOID CURSE!');
+      setStatus(`☠️ VOID CURSE INFLICTED! (30s) Turning 1 heart black every 10s!`);
+
+      voidCurseTimer = setInterval(() => {
+        voidCurseRemaining--;
+
+        // Every 10 seconds (at 20s, 10s, 0s), turn one heart black!
+        if (voidCurseRemaining % 10 === 0) {
+          decayOneHeart();
+        }
+
+        if (voidCurseRemaining <= 0) {
+          clearVoidCurse();
+          setStatus("✨ The Void Curse has expired! Giraffe is safe.");
+        } else {
+          // If status bar is showing curse, update countdown
+          if (statusMessage.textContent.includes('VOID CURSE') || statusMessage.textContent.includes('Decay')) {
+            setStatus(`☠️ VOID CURSE: ${voidCurseRemaining}s left (Turning 1 heart black every 10s!)`);
+          }
+        }
+      }, 1000);
+    }
+
+    function clearVoidCurse() {
+      if (voidCurseTimer) {
+        clearInterval(voidCurseTimer);
+        voidCurseTimer = null;
+      }
+      voidCurseRemaining = 0;
+      const containerEl = document.querySelector('.container');
+      if (containerEl) containerEl.classList.remove('void-cursed');
+    }
+
+    // Turns one heart black (wither decay from Void Curse)
+    function decayOneHeart() {
+      playDecayTickSound();
+      triggerHurt();
+
+      // If extra yellow hearts exist, decay extra heart first
+      if (extraHearts > 0) {
+        extraHearts--;
+        renderHearts(BASE_HEARTS + extraHearts, false, true);
+        spawnParticles('curse', '🖤 EXTRA HEART WITHERED!');
+        setStatus(`☠️ Void Curse withered an Extra Golden Heart! (${currentBaseHearts + extraHearts} HP left)`);
+        return;
+      }
+
+      // Otherwise turn 1 base red heart black
+      if (currentBaseHearts > 0) {
+        currentBaseHearts--;
+        renderHearts(currentBaseHearts, false);
+        spawnParticles('curse', '🖤 1 HEART TURNED BLACK!');
+
+        if (currentBaseHearts === 0) {
+          setStatus("😵 Void Curse turned all hearts black! Eat grass quickly to revive!");
+        } else {
+          setStatus(`☠️ Void Curse turned 1 heart black! ${currentBaseHearts}/3 base hearts left!`);
+        }
+      }
     }
 
     // Recover base hearts when eating grass (extra golden hearts must be found in Sunflower Lawn)
@@ -1352,6 +1617,50 @@
         setTimeout(() => { blockEl.className = 'block dirt'; }, 700);
         scheduleMysteryReset(index);
 
+      } else if (revealedType === 'boombox') {
+        // BOOMBOX: Special surprise in The Void! Explodes for 2 hearts + chance for 30s Void Curse!
+        mystery.status = 'broken';
+        blockEl.className = 'block boombox';
+
+        // Detonation sound and container shake
+        playBoomboxSound();
+        triggerHurt();
+        const containerEl = document.querySelector('.container');
+        if (containerEl) {
+          containerEl.classList.add('shake');
+          setTimeout(() => containerEl.classList.remove('shake'), 550);
+        }
+
+        // Deals 2 hearts damage (extra yellow hearts broken first!)
+        if (extraHearts >= 2) {
+          extraHearts -= 2;
+          renderHearts(-1, false, true);
+          spawnParticles('boom', '💥 -2 💛 BOOMBOX BLAST!');
+        } else if (extraHearts === 1) {
+          extraHearts = 0;
+          currentBaseHearts = Math.max(0, currentBaseHearts - 1);
+          renderHearts(currentBaseHearts, false);
+          spawnParticles('boom', '💥 -2 💔 BOOMBOX BLAST!');
+        } else {
+          currentBaseHearts = Math.max(0, currentBaseHearts - 2);
+          renderHearts(currentBaseHearts, false);
+          spawnParticles('boom', '💥 -2 💔 BOOMBOX BLAST!');
+        }
+
+        setTimeout(() => { blockEl.className = 'block broken-stone'; }, 700);
+
+        // Chance to trigger 30s Void Curse effect (turns 1 heart black every 10s!)
+        if (Math.random() < 0.35) {
+          setTimeout(() => {
+            startVoidCurse(30);
+          }, 750);
+          setStatus("💥 BOOM! The Boombox exploded for 2 hearts AND cursed the giraffe with 30s Void Decay!");
+        } else {
+          setStatus("💥 KA-BOOM! The Void Boombox exploded and destroyed 2 hearts!");
+        }
+
+        scheduleMysteryReset(index);
+
       } else {
         // GRASS in mystery layer
         triggerMunch();
@@ -1393,9 +1702,10 @@
     // - Different biomes go first (unvisited biomes prioritized, never repeat current biome)
     // - Plains is less common (10% relative weight)
     const BIOME_WEIGHTS = {
-      sunflower: 35,
-      nether: 35,
-      savanna: 20,
+      void: 25,
+      sunflower: 25,
+      nether: 25,
+      savanna: 15,
       plains: 10 // Plains is less common
     };
 
@@ -1484,9 +1794,10 @@
       }
     }
 
-    // Reset Button: Resets Game, Grass, Biome, Cooldowns, and Hearts
+    // Reset Button: Resets Game, Grass, Biome, Cooldowns, Hearts, and Void Curse
     function resetGame() {
       // Clear timers
+      clearVoidCurse();
       if (biomeCooldownTimer) {
         clearInterval(biomeCooldownTimer);
         biomeCooldownTimer = null;
